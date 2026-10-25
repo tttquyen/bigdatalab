@@ -84,7 +84,9 @@ Kiểm thử bằng Dev Containers CLI 0.89.0 trên Linux (Docker 29.8.1), giớ
 | RAM các container (cụm lõi rảnh / có extras) | 2,4 GB / 4,0 GB | 2,4 GB / 4,1 GB |
 | Dừng rồi mở lại codespace | — | Cụm tự bật lại sau 86 giây; dữ liệu HDFS còn nguyên |
 
-Chưa kiểm thử trực tiếp: chạy trên hạ tầng GitHub Codespaces thật, nhánh tải image từ `ghcr.io` (`LAB_IMAGE`), workflow GitHub Actions. Nên chạy thử một codespace trước khi phát cho cả lớp.
+**Kiểm chứng trên GitHub Codespaces thật (25/10/2026, repo `tttquyen/bigdatalab`, máy 2 nhân / 8 GB):** workflow GitHub Actions build và đẩy image lên `ghcr.io/tttquyen/bigdata-lab:2026.10`; codespace tải image này (không tự build); cụm lõi 8/8 container healthy, `lab test` 11/11 PASS, RAM các container 1,9 GB, 13 cổng Web UI được forward.
+
+Chưa kiểm chứng trên Codespaces thật: dịch vụ bổ sung (17/17 mới đo trên máy mô phỏng), dừng/mở lại codespace, tài khoản sinh viên khác tải image (cần package ở chế độ Public).
 
 Hai lỗi phát hiện khi kiểm thử và đã xử lý trong script:
 - Kernel Linux mới (máy kiểm thử dùng 7.0) không còn iptables legacy → Docker-in-Docker không khởi động. `docker-san-sang.sh` tự chuyển sang iptables-nft.
