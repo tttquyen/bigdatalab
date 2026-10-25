@@ -1,0 +1,6 @@
+# dữ liệu sinh ra và tệp tải về — không đưa lên GitHub
+data/*
+!data/.gitkeep
+downloads/*
+!downloads/.gitkeep
+.env
