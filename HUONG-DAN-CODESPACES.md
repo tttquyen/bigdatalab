@@ -55,7 +55,7 @@ Codespaces tính theo **core-hour** (số nhân × số giờ chạy) và **dung
 Ví dụ buổi thực hành 3 giờ: máy 2 nhân tốn 6 core-hour, máy 4 nhân tốn 12 core-hour → sinh viên đã xác minh đủ khoảng 30 buổi/tháng (2 nhân) hoặc 15 buổi/tháng (4 nhân).
 Khi dùng qua **GitHub Classroom**, chi phí codespace của repo bài tập được tính cho Organization của lớp (giảng viên đã xác minh có hạn mức Codespaces Education riêng), không trừ vào quota cá nhân sinh viên.
 
-**Mặc định là máy 2 nhân / 8 GB** (`hostRequirements` trong `.devcontainer/devcontainer.json`): đã kiểm thử chạy được cụm lõi và toàn bộ dịch vụ bổ sung (mục 8). Máy 4 nhân / 16 GB chạy nhanh hơn khoảng 1,6 lần nhưng tốn gấp đôi quota — nên dùng cho bài nặng (MLlib, dữ liệu 5 triệu dòng).
+**Mặc định là máy 2 nhân / 8 GB** (`hostRequirements` trong `.devcontainer/devcontainer.json`): đủ cho cụm lõi cộng dịch vụ bổ sung của **một** bài (`lab hive`, `lab nosql` hoặc `lab kafka`; tắt bằng `lab stop-extras` khi xong). Không nên bật **tất cả** dịch vụ bổ sung cùng lúc trên máy này: đo trên Codespaces thật chỉ còn ~2 GB RAM trống, job Spark có thể lỗi ngẫu nhiên (mục 8). Máy 4 nhân / 16 GB chạy nhanh hơn khoảng 1,6 lần nhưng tốn gấp đôi quota — nên dùng cho bài nặng (MLlib, dữ liệu 5 triệu dòng).
 
 **Dung lượng đĩa** (đo thực tế, ước tính cho quota lưu trữ): cụm lõi ≈ 6,4 GB (image `bigdata-lab` 4,7 GB + nền dev container 1,7 GB); thêm toàn bộ image dịch vụ bổ sung ≈ 13,7 GB. Tài khoản Free (15 GB) nên tắt và xoá image dịch vụ không còn dùng (`docker image rm apache/hive:4.2.1` sau Lab 3...).
 
@@ -86,7 +86,9 @@ Kiểm thử bằng Dev Containers CLI 0.89.0 trên Linux (Docker 29.8.1), giớ
 
 **Kiểm chứng trên GitHub Codespaces thật (25/10/2026, repo `tttquyen/bigdatalab`, máy 2 nhân / 8 GB):** workflow GitHub Actions build và đẩy image lên `ghcr.io/tttquyen/bigdata-lab:2026.10`; codespace tải image này (không tự build); cụm lõi 8/8 container healthy, `lab test` 11/11 PASS, RAM các container 1,9 GB, 13 cổng Web UI được forward.
 
-Chưa kiểm chứng trên Codespaces thật: dịch vụ bổ sung (17/17 mới đo trên máy mô phỏng), dừng/mở lại codespace, tài khoản sinh viên khác tải image (cần package ở chế độ Public).
+**Bật toàn bộ dịch vụ bổ sung trên Codespaces thật (2 nhân / 8 GB):** `lab test` lần đầu 16/17 PASS — bài *PySpark HDFS parquet* lỗi, chạy lại riêng thì đạt (`ROWS_IN_PARQUET 7`). Lúc rảnh: 14 container dùng ~4,0 GB, máy còn 2,0 GB trống trên 7,8 GB, không swap; không container nào bị OOM. Phần chênh so với mô phỏng (~1,8 GB) là VS Code và extension chạy trong codespace. → Lỗi nhất thời do thiếu RAM; khuyến nghị bật dịch vụ bổ sung theo từng bài, hoặc dùng máy 4 nhân / 16 GB nếu cần bật tất cả.
+
+Chưa kiểm chứng trên Codespaces thật: dừng/mở lại codespace, tài khoản sinh viên khác tải image (cần package ở chế độ Public).
 
 Hai lỗi phát hiện khi kiểm thử và đã xử lý trong script:
 - Kernel Linux mới (máy kiểm thử dùng 7.0) không còn iptables legacy → Docker-in-Docker không khởi động. `docker-san-sang.sh` tự chuyển sang iptables-nft.

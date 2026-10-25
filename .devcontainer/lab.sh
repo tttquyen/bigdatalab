@@ -19,7 +19,14 @@ case "${1:-help}" in
   hive)    docker compose "${ALL[@]}" up -d --wait --wait-timeout 420 hiveserver2 ;;
   nosql)   docker compose "${ALL[@]}" up -d --wait --wait-timeout 300 hbase mongodb ;;
   kafka)   docker compose "${ALL[@]}" up -d --wait --wait-timeout 300 kafka ;;
-  extras)  docker compose "${ALL[@]}" up -d --wait --wait-timeout 420 ;;
+  extras)
+    mem_gb=$(awk '/MemTotal/{printf "%d", $2/1048576}' /proc/meminfo)
+    if [ "${mem_gb:-0}" -lt 12 ]; then
+      echo "CẢNH BÁO: máy có ~${mem_gb} GB RAM. Bật cùng lúc mọi dịch vụ bổ sung chỉ còn ~2 GB trống,"
+      echo "job Spark có thể lỗi ngẫu nhiên. Nên bật theo bài: lab hive | lab nosql | lab kafka."
+      echo "Vẫn bật tất cả sau 5 giây (Ctrl+C để huỷ)..."; sleep 5
+    fi
+    docker compose "${ALL[@]}" up -d --wait --wait-timeout 420 ;;
   stop-extras) docker compose "${ALL[@]}" stop hiveserver2 hive-metastore hive-metastore-db kafka hbase mongodb ;;
   stop)    docker compose "${ALL[@]}" stop ;;
   status)
